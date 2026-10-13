@@ -1252,6 +1252,7 @@ work with our talent network? Send us a message.
 
 <div class="contact-form-box">
 
+
 <form
 action="https://formsubmit.co/nexaoradigital@gmail.com"
 method="POST"
@@ -1261,11 +1262,9 @@ type="hidden"
 name="_subject"
 value="New Nexaora Digital Client Message"
 >
-<input
-type="hidden"
-name="_subject"
-value="New Nexaora Digital Client Message">
 <input type="hidden" name="_captcha" value="false">
+<input type="hidden" name="_template" value="table">
+    
 
 <label>Your Name</label>
 
@@ -1656,6 +1655,56 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
+    /* Contact form submission */
+
+    const contactForm = document.querySelector(".contact-form-box form");
+
+    if (contactForm) {
+        contactForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Sending...";
+
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: "POST",
+                    body: new FormData(contactForm),
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Message could not be sent");
+                }
+
+                contactForm.reset();
+
+                let successMessage = contactForm.querySelector(".form-success-message");
+
+                if (!successMessage) {
+                    successMessage = document.createElement("p");
+                    successMessage.className = "form-success-message";
+                    successMessage.setAttribute("role", "status");
+                    contactForm.appendChild(successMessage);
+                }
+
+                successMessage.textContent = "Thank you! Your message has been sent successfully.";
+                successMessage.style.color = "#16a34a";
+
+            } catch (error) {
+                alert("Sorry, your message could not be sent. Please try again.");
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+            }
+        });
+    }
+    
 </script>
 
 
